@@ -1,0 +1,27 @@
+# Visual Studio
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Build results
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Bb]uild/
+[Bb]in/
+[Oo]bj/
+
+# ASP.NET Scaffolding
+ScaffoldingReadMe.txt
+
+# npm
+node_modules/
+
+# Packages
+*.nupkg
+
+# Visual Studio Code
+.vscode/
