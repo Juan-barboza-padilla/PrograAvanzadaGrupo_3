@@ -1,10 +1,47 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using taskQueueGrupo3.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Agregar cadena de conexion al archivo appsettings.json
 builder.Services.AddDbContext<TaskContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("TaskQueueGrupo3DBConnection")));
+
+
+// Configurar Identity para la autenticación y autorización
+builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+    .AddEntityFrameworkStores<TaskContext>()
+    .AddDefaultTokenProviders();
+
+
+// Configuración de las opciones de identidad (por ejemplo, contraseñas, bloqueos, etc.)
+builder.Services.Configure<IdentityOptions>(options =>
+{
+    // Configuración de la política de contraseñas
+    options.Password.RequireDigit = true;
+    options.Password.RequiredLength = 6;
+    options.Password.RequireLowercase = true;
+    options.Password.RequireUppercase = true;
+    options.Password.RequireNonAlphanumeric = false;
+
+    // Configuración de bloqueo de cuenta
+    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+    options.Lockout.MaxFailedAccessAttempts = 3;
+
+    // Configuración de usuarios
+    options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
+    options.User.RequireUniqueEmail = true;
+});
+
+// Agregar servicios de autenticación
+builder.Services.AddAuthentication()
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Account/Login";  // Cambiar a la ruta predeterminada de Account
+        options.LogoutPath = "/Account/Logout";  // Puedes usar Logout también
+        options.AccessDeniedPath = "/Home/AccessDenied";  // Ruta para acceso denegado
+    });
 
 // Agregar servicios al contenedor
 builder.Services.AddControllersWithViews();
@@ -21,7 +58,9 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-app.UseAuthorization();
+// Usar autenticación y autorización
+app.UseAuthentication(); // Agregar autenticación
+app.UseAuthorization();  // Agregar autorización
 
 app.MapControllerRoute(
     name: "default",

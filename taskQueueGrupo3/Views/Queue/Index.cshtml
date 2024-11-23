@@ -1,0 +1,34 @@
+﻿@model IEnumerable<taskQueueGrupo3.Models.Task>
+
+<h2>Cola de Tareas</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Prioridad</th>
+            <th>Estado</th>
+            <th>Fecha de Ejecución</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var tarea in Model)
+        {
+            <tr>
+                <td>@tarea.Name</td>
+                <td>@tarea.Priority</td>
+                <td>@tarea.Status</td>
+                <td>@tarea.ExecutionDate</td>
+                <td>
+                    @if (tarea.Status == "Fallida")
+                    {
+                        <form asp-action="Retry" method="post">
+                            <input type="hidden" name="id" value="@tarea.Id" />
+                            <button type="submit">Reintentar</button>
+                        </form>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
