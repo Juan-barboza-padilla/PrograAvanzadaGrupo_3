@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 using System.Linq;
 using TaskModel = taskQueueGrupo3.Models.Task;
-using Task = System.Threading.Tasks.Task;  // Evitar conflicto con System.Threading.Tasks
+using Task = System.Threading.Tasks.Task;
 
 namespace taskQueueGrupo3.Controllers
 {
@@ -38,7 +38,7 @@ namespace taskQueueGrupo3.Controllers
                 await _context.SaveChangesAsync();
 
                 await NotifyUser(task, success);
-                await Task.Delay(TimeSpan.FromSeconds(30));  // Usa System.Threading.Tasks.Task
+                await Task.Delay(TimeSpan.FromSeconds(30));
             }
 
             return Ok("Procesamiento de la cola completado");
@@ -49,7 +49,7 @@ namespace taskQueueGrupo3.Controllers
             var notification = new Notification
             {
                 TaskId = task.Id,
-                RecipientEmail = "user@example.com",  // Debe enlazarse al usuario real
+                RecipientEmail = "user@example.com",
                 Message = success ? $"La tarea '{task.Name}' se completó exitosamente." : $"La tarea '{task.Name}' falló.",
                 SentDate = DateTime.Now,
                 IsSuccess = success
@@ -63,11 +63,10 @@ namespace taskQueueGrupo3.Controllers
         {
             try
             {
-                // Implementación real de la lógica de la tarea
                 Console.WriteLine($"Ejecutando tarea: {task.Name}");
-                await Task.Delay(TimeSpan.FromSeconds(10));  // Ajusta la duración según sea necesario
+                await Task.Delay(TimeSpan.FromSeconds(10));
 
-                return true;  // Ajusta según la lógica específica
+                return true;
             }
             catch (Exception ex)
             {

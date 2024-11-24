@@ -6,7 +6,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using TaskModel = taskQueueGrupo3.Models.Task;
-using Task = System.Threading.Tasks.Task;  // Evitar conflicto con System.Threading.Tasks
+using Task = System.Threading.Tasks.Task;
 
 public class TaskQueueBackgroundService : BackgroundService
 {
@@ -46,7 +46,7 @@ public class TaskQueueBackgroundService : BackgroundService
 
                     await CreateNotification(_context, task, success);
 
-                    await Task.Delay(_delayBetweenTasks, stoppingToken);  // Usa Task.Delay para no bloquear
+                    await Task.Delay(_delayBetweenTasks, stoppingToken);
                 }
                 else
                 {
@@ -60,11 +60,11 @@ public class TaskQueueBackgroundService : BackgroundService
     {
         try
         {
-            // Implementación de la lógica real de la tarea
+            
             Console.WriteLine($"Ejecutando tarea: {task.Name}");
-            await Task.Delay(TimeSpan.FromSeconds(10));  // Ajusta según la lógica real
+            await Task.Delay(TimeSpan.FromSeconds(10));
 
-            return true;  // Suponiendo éxito; ajusta según sea necesario
+            return true;
         }
         catch (Exception ex)
         {
@@ -78,7 +78,7 @@ public class TaskQueueBackgroundService : BackgroundService
         var notification = new Notification
         {
             TaskId = task.Id,
-            RecipientEmail = "user@example.com",  // Obtener el correo del usuario real asociado a la tarea
+            RecipientEmail = "user@example.com",
             Message = success ? $"La tarea '{task.Name}' se completó con éxito." : $"La tarea '{task.Name}' falló.",
             SentDate = DateTime.Now,
             IsSuccess = success
