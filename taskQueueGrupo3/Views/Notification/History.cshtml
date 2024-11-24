@@ -1,0 +1,27 @@
+﻿@model IEnumerable<taskQueueGrupo3.Models.Notification>
+
+<h2>Historial de Notificaciones</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Tarea</th>
+            <th>Mensaje</th>
+            <th>Correo Destino</th>
+            <th>Fecha de Envío</th>
+            <th>Éxito</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var notification in Model)
+        {
+            <tr>
+                <td>@notification.TaskId</td>
+                <td>@notification.Message</td>
+                <td>@notification.RecipientEmail</td>
+                <td>@notification.SentDate.ToString("g")</td>
+                <td>@(notification.IsSuccess ? "Sí" : "No")</td>
+            </tr>
+        }
+    </tbody>
+</table>

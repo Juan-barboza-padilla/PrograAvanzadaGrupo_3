@@ -1,0 +1,27 @@
+﻿@model IEnumerable<taskQueueGrupo3.Models.Task>
+
+<h2>Monitor de Tareas</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Descripción</th>
+            <th>Prioridad</th>
+            <th>Fecha de Ejecución</th>
+            <th>Estado</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var task in Model)
+        {
+            <tr>
+                <td>@task.Name</td>
+                <td>@task.Description</td>
+                <td>@task.Priority</td>
+                <td>@task.ExecutionDate.ToString("g")</td>
+                <td>@task.Status</td>
+            </tr>
+        }
+    </tbody>
+</table>

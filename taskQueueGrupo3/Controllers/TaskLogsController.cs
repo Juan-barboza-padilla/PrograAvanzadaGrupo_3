@@ -53,6 +53,27 @@ namespace taskQueueGrupo3.Controllers
             return View();
         }
 
+        // GET: TaskLogs/LogDetails
+        public async Task<IActionResult> LogDetails(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var taskLog = await _context.TaskLogs
+                .Include(t => t.Task)
+                .FirstOrDefaultAsync(m => m.Id == id);
+
+            if (taskLog == null)
+            {
+                return NotFound();
+            }
+
+            return View(taskLog);
+        }
+
+
         // POST: TaskLogs/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.

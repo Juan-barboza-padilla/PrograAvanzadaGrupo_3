@@ -1,0 +1,11 @@
+﻿@model taskQueueGrupo3.Models.TaskLog
+
+<h2>Detalles del Log</h2>
+
+<div>
+    <h4>Tarea: @Model.Task.Name</h4>
+    <p><strong>Mensaje del Log:</strong> @Model.LogMessage</p>
+    <p><strong>Fecha del Log:</strong> @Model.LogDate.ToString("g")</p>
+</div>
+
+<a href="@Url.Action("Index", "TaskLogs")" class="btn btn-secondary">Volver</a>

@@ -24,8 +24,19 @@ namespace taskQueueGrupo3.Controllers
 			return View(tasks);
 		}
 
-		// POST: Queue/Retry/5
-		[HttpPost]
+        // GET: Queue/Monitor
+        public async Task<IActionResult> Monitor()
+        {
+            var tasks = await _context.Tasks
+                .OrderBy(t => t.Priority)
+                .ThenBy(t => t.ExecutionDate)
+                .ToListAsync();
+
+            return View(tasks);
+        }
+
+        // POST: Queue/Retry/5
+        [HttpPost]
 		public async Task<IActionResult> Retry(int id)
 		{
 			var task = await _context.Tasks.FindAsync(id);
@@ -51,5 +62,8 @@ namespace taskQueueGrupo3.Controllers
 
 			return Json(taskSummary); // Devolver el resumen como JSON
 		}
-	}
+
+        
+
+    }
 }

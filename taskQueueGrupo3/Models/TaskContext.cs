@@ -7,6 +7,8 @@ public class TaskContext : IdentityDbContext<IdentityUser, IdentityRole, string>
 {
     public DbSet<taskQueueGrupo3.Models.Task> Tasks { get; set; }
     public DbSet<TaskLog> TaskLogs { get; set; }
+    public DbSet<Notification> Notifications { get; set; }
+
 
     public TaskContext(DbContextOptions<TaskContext> options) : base(options) { }
 
