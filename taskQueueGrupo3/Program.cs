@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using taskQueueGrupo3.Models;
+using taskQueueGrupo3.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -49,6 +50,22 @@ builder.Services.AddControllersWithViews();
 // Construir la aplicación
 var app = builder.Build();
 
+// Ejecutar el seeding del usuario administrador 
+
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        await DataSeeder.SeedAdminUserAsync(services);
+        Console.WriteLine("Usuario administrador inicial creado exitosamente.");
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Error al crear el usuario administrador: {ex.Message}");
+    }
+}
+
 // Configurar la tubería de solicitud HTTP
 if (!app.Environment.IsDevelopment())
 {
@@ -59,8 +76,8 @@ app.UseStaticFiles();
 app.UseRouting();
 
 // Usar autenticación y autorización
-app.UseAuthentication(); // Agregar autenticación
-app.UseAuthorization();  // Agregar autorización
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
