@@ -7,3 +7,5 @@ Nugets:
 Microsoft.EntityFrameworkCore
 Microsoft.EntityFrameworkCore.SqlServer
 Microsoft.EntityFrameworkCore.Tools
+Install-Package Microsoft.Extensions.Options
+Install-Package MailKit
