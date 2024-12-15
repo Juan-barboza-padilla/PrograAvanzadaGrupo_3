@@ -1,154 +1,141 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using TaskModel = taskQueueGrupo3.Models.Task;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using taskQueueGrupo3.Models;
 
-namespace taskQueueGrupo3.Controllers
+public class TasksController : Controller
 {
-    [Authorize]
-    public class TasksController : Controller
+    private readonly TaskContext _context;
+
+    public TasksController(TaskContext context)
     {
-        private readonly TaskContext _context;
+        _context = context;
+    }
 
-        public TasksController(TaskContext context)
+    // GET: Tasks
+    public async System.Threading.Tasks.Task<IActionResult> Index()
+    {
+        return View(await _context.Tasks.ToListAsync());
+    }
+
+    // GET: Tasks/Details/5
+    public async System.Threading.Tasks.Task<IActionResult> Details(int? id)
+    {
+        if (id == null)
         {
-            _context = context;
+            return NotFound();
         }
 
-        // GET: Tasks
-        public async Task<IActionResult> Index()
+        var task = await _context.Tasks
+            .FirstOrDefaultAsync(m => m.Id == id);
+        if (task == null)
         {
-            return View(await _context.Tasks.ToListAsync());
+            return NotFound();
         }
 
-        // GET: Tasks/Details/5
-        public async Task<IActionResult> Details(int? id)
+        return View(task);
+    }
+
+    // GET: Tasks/Create
+    public IActionResult Create()
+    {
+        return View();
+    }
+
+    // POST: Tasks/Create
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async System.Threading.Tasks.Task<IActionResult> Create([Bind("Id,Name,Description,Priority,ExecutionDate,Status,CreatedAt,UpdatedAt")] TaskModel task)
+    {
+        if (ModelState.IsValid)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var task = await _context.Tasks
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (task == null)
-            {
-                return NotFound();
-            }
-
-            return View(task);
-        }
-
-        // GET: Tasks/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Tasks/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description,Priority,ExecutionDate,Status,CreatedAt,UpdatedAt")] taskQueueGrupo3.Models.Task task)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(task);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(task);
-        }
-
-        // GET: Tasks/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var task = await _context.Tasks.FindAsync(id);
-            if (task == null)
-            {
-                return NotFound();
-            }
-            return View(task);
-        }
-
-        // POST: Tasks/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,Priority,ExecutionDate,Status,CreatedAt,UpdatedAt")] taskQueueGrupo3.Models.Task task)
-        {
-            if (id != task.Id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(task);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!TaskExists(task.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(task);
-        }
-
-        // GET: Tasks/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var task = await _context.Tasks
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (task == null)
-            {
-                return NotFound();
-            }
-
-            return View(task);
-        }
-
-        // POST: Tasks/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var task = await _context.Tasks.FindAsync(id);
-            if (task != null)
-            {
-                _context.Tasks.Remove(task);
-            }
-
+            _context.Add(task);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+        return View(task);
+    }
 
-        private bool TaskExists(int id)
+    // GET: Tasks/Edit/5
+    public async System.Threading.Tasks.Task<IActionResult> Edit(int? id)
+    {
+        if (id == null)
         {
-            return _context.Tasks.Any(e => e.Id == id);
+            return NotFound();
         }
+
+        var task = await _context.Tasks.FindAsync(id);
+        if (task == null)
+        {
+            return NotFound();
+        }
+        return View(task);
+    }
+
+    // POST: Tasks/Edit/5
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async System.Threading.Tasks.Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,Priority,ExecutionDate,Status,CreatedAt,UpdatedAt")] TaskModel task)
+    {
+        if (id != task.Id)
+        {
+            return NotFound();
+        }
+
+        if (ModelState.IsValid)
+        {
+            try
+            {
+                _context.Update(task);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!TaskExists(task.Id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            return RedirectToAction(nameof(Index));
+        }
+        return View(task);
+    }
+
+    // GET: Tasks/Delete/5
+    public async System.Threading.Tasks.Task<IActionResult> Delete(int? id)
+    {
+        if (id == null)
+        {
+            return NotFound();
+        }
+
+        var task = await _context.Tasks
+            .FirstOrDefaultAsync(m => m.Id == id);
+        if (task == null)
+        {
+            return NotFound();
+        }
+
+        return View(task);
+    }
+
+    // POST: Tasks/Delete/5
+    [HttpPost, ActionName("Delete")]
+    [ValidateAntiForgeryToken]
+    public async System.Threading.Tasks.Task<IActionResult> DeleteConfirmed(int id)
+    {
+        var task = await _context.Tasks.FindAsync(id);
+        _context.Tasks.Remove(task);
+        await _context.SaveChangesAsync();
+        return RedirectToAction(nameof(Index));
+    }
+
+    private bool TaskExists(int id)
+    {
+        return _context.Tasks.Any(e => e.Id == id);
     }
 }
