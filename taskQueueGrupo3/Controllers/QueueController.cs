@@ -4,17 +4,17 @@ using taskQueueGrupo3.Models;
 
 namespace taskQueueGrupo3.Controllers
 {
-	public class QueueController : Controller
-	{
-		private readonly TaskContext _context;
+    public class QueueController : Controller
+    {
+        private readonly TaskContext _context;
 
-		public QueueController(TaskContext context)
-		{
-			_context = context;
-		}
+        public QueueController(TaskContext context)
+        {
+            _context = context;
+        }
 
-		// GET: Queue/Index
-		public async Task<IActionResult> Index()
+        // GET: Queue/Index
+        public async Task<IActionResult> Index()
 		{
 			var tasks = await _context.Tasks
 				.OrderBy(t => t.Priority) // Ordenar por prioridad

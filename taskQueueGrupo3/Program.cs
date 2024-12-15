@@ -5,16 +5,19 @@ using taskQueueGrupo3.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Agregar cadena de conexion al archivo appsettings.json
+// Configurar logging para habilitar niveles detallados
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+builder.Logging.AddConfiguration(builder.Configuration.GetSection("Logging"));
+
+// Agregar cadena de conexión al archivo appsettings.json
 builder.Services.AddDbContext<TaskContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("TaskQueueGrupo3DBConnection")));
-
 
 // Configurar Identity para la autenticación y autorización
 builder.Services.AddIdentity<IdentityUser, IdentityRole>()
     .AddEntityFrameworkStores<TaskContext>()
     .AddDefaultTokenProviders();
-
 
 // Configuración de las opciones de identidad (por ejemplo, contraseñas, bloqueos, etc.)
 builder.Services.Configure<IdentityOptions>(options =>
@@ -25,11 +28,9 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.Password.RequireLowercase = true;
     options.Password.RequireUppercase = true;
     options.Password.RequireNonAlphanumeric = false;
-
     // Configuración de bloqueo de cuenta
     options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
     options.Lockout.MaxFailedAccessAttempts = 3;
-
     // Configuración de usuarios
     options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
     options.User.RequireUniqueEmail = true;
@@ -39,30 +40,37 @@ builder.Services.Configure<IdentityOptions>(options =>
 builder.Services.AddAuthentication()
     .AddCookie(options =>
     {
-        options.LoginPath = "/Account/Login";  // Cambiar a la ruta predeterminada de Account
-        options.LogoutPath = "/Account/Logout";  // Puedes usar Logout también
-        options.AccessDeniedPath = "/Home/AccessDenied";  // Ruta para acceso denegado
+        options.LoginPath = "/Account/Login";
+        options.LogoutPath = "/Account/Logout";
+        options.AccessDeniedPath = "/Home/AccessDenied";
     });
 
 // Agregar servicios al contenedor
 builder.Services.AddControllersWithViews();
 
+// Registrar el servicio TaskQueueService
+builder.Services.AddHostedService<TaskQueueService>();
+
+// Servicio de envíos SMTP
+builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));
+builder.Services.AddTransient<IEmailService, EmailService>();
+builder.Services.AddHttpContextAccessor();
+
 // Construir la aplicación
 var app = builder.Build();
 
 // Ejecutar el seeding del usuario administrador 
-
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
     try
     {
         await DataSeeder.SeedAdminUserAsync(services);
-        Console.WriteLine("Usuario administrador inicial creado exitosamente.");
+        app.Logger.LogInformation("Usuario administrador inicial creado exitosamente.");
     }
     catch (Exception ex)
     {
-        Console.WriteLine($"Error al crear el usuario administrador: {ex.Message}");
+        app.Logger.LogError($"Error al crear el usuario administrador: {ex.Message}");
     }
 }
 
@@ -71,8 +79,8 @@ if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
 }
-app.UseStaticFiles();
 
+app.UseStaticFiles();
 app.UseRouting();
 
 // Usar autenticación y autorización
