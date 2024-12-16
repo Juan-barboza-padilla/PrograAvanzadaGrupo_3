@@ -22,7 +22,7 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Tasks" asp-action="">Tareas</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Tasks" asp-action="Index">Tareas</a>
                         </li>
 
                         @if (User.IsInRole("Admin"))
@@ -33,13 +33,13 @@
                         }
 
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Queue" asp-action="">Queque Tareas</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Queue" asp-action="Index">Queque Tareas</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="TaskLogs" asp-action="">Log de tareas</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="TaskLogs" asp-action="Index">Log de tareas</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Notification" asp-action="">Notificaciones</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Notification" asp-action="Index">Notificaciones</a>
                         </li>
                     </ul>
 

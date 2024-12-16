@@ -37,7 +37,7 @@ namespace taskQueueGrupo3.Services
                 _logger.LogInformation("Contexto de base de datos inicializado correctamente.");
 
                 // Obtener el correo electrónico del usuario logueado
-                var userEmail = "Ejemplo@gmail.com";
+                var userEmail = "davidjuanca29@gmail.com";
                 if (string.IsNullOrEmpty(userEmail))
                 {
                     _logger.LogError("No se pudo obtener el correo electrónico del usuario logueado.");
